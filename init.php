@@ -82,6 +82,9 @@ class BotBlockerPlugin extends BasePlugin
         // Реєстрація пункту меню
         addFilter('admin_menu', [$this, 'registerAdminMenu'], 20);
         
+        // Реєстрація в категоріях налаштувань
+        addFilter('settings_categories', [$this, 'registerSettingsCategory'], 10);
+        
         // Блокування ботів (ранній хук з високим пріоритетом)
         addHook('handle_early_request', [$this, 'blockBots'], 1);
     }
@@ -167,6 +170,36 @@ class BotBlockerPlugin extends BasePlugin
         }
 
         return $menu;
+    }
+
+    /**
+     * Реєстрація в категоріях налаштувань
+     * 
+     * Додає плагін до категорії "Система" на сторінці /admin/settings
+     * 
+     * @param array<string, mixed> $categories Поточні категорії
+     * @return array<string, mixed> Оновлені категорії
+     */
+    public function registerSettingsCategory(array $categories): array
+    {
+        // Перевіряємо, чи плагін активний
+        $pluginManager = function_exists('pluginManager') ? pluginManager() : null;
+        if (!$pluginManager || !method_exists($pluginManager, 'isPluginActive') || !$pluginManager->isPluginActive('bot-blocker')) {
+            return $categories;
+        }
+
+        // Додаємо до категорії "Система"
+        if (isset($categories['system'])) {
+            $categories['system']['items'][] = [
+                'title' => 'Блокування ботів',
+                'description' => 'Управління блокуванням ботів',
+                'url' => UrlHelper::admin('bot-blocker'),
+                'icon' => 'fas fa-shield-alt',
+                'permission' => null,
+            ];
+        }
+
+        return $categories;
     }
 
     /**
