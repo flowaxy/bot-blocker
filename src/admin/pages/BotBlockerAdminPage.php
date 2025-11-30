@@ -11,10 +11,6 @@ $engineDir = $rootDir . '/engine';
 
 require_once $engineDir . '/interface/admin-ui/includes/AdminPage.php';
 
-// Підключаємо необхідні класи ядра
-if (!class_exists('Logger') && file_exists($engineDir . '/infrastructure/logging/Logger.php')) {
-    require_once $engineDir . '/infrastructure/logging/Logger.php';
-}
 
 if (!class_exists('Response') && file_exists($engineDir . '/interface/http/controllers/Response.php')) {
     require_once $engineDir . '/interface/http/controllers/Response.php';
@@ -62,9 +58,7 @@ class BotBlockerAdminPage extends AdminPage
             try {
                 $this->botBlockerService = new BotBlockerService('bot-blocker');
             } catch (\Throwable $e) {
-                if (function_exists('logger')) {
-                    logger()->logException($e, ['plugin' => 'bot-blocker', 'action' => 'init']);
-                }
+                logger()->logException($e, ['plugin' => 'bot-blocker', 'action' => 'init']);
             }
         }
 
@@ -123,9 +117,7 @@ class BotBlockerAdminPage extends AdminPage
                 'botBlockerStats' => $stats,
             ]);
         } catch (\Throwable $e) {
-            if (function_exists('logger')) {
-                logger()->logException($e, ['plugin' => 'bot-blocker', 'action' => 'render']);
-            }
+            logger()->logException($e, ['plugin' => 'bot-blocker', 'action' => 'render']);
             $this->setMessage('Помилка завантаження налаштувань: ' . $e->getMessage(), 'danger');
             $this->render([
                 'settings' => ['block_enabled' => '0', 'allowed_bots' => []],
@@ -177,9 +169,7 @@ class BotBlockerAdminPage extends AdminPage
                 $this->setMessage('Помилка збереження налаштувань', 'danger');
             }
         } catch (\Throwable $e) {
-            if (function_exists('logger')) {
-                logger()->logException($e, ['plugin' => 'bot-blocker', 'action' => 'save_settings']);
-            }
+            logger()->logException($e, ['plugin' => 'bot-blocker', 'action' => 'save_settings']);
             $this->setMessage('Помилка: ' . $e->getMessage(), 'danger');
         }
 

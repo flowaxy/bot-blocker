@@ -44,9 +44,7 @@ class BotBlockerService
         try {
             $this->db = DatabaseHelper::getInstance();
         } catch (\Exception $e) {
-            if (function_exists('logger')) {
-                logger()->logError('BotBlockerService: Помилка з\'єднання з базою даних - ' . $e->getMessage());
-            }
+            logger()->logError('BotBlockerService: Помилка з\'єднання з базою даних - ' . $e->getMessage(), ['exception' => $e]);
         }
 
         $this->loadSettings();
@@ -113,9 +111,7 @@ class BotBlockerService
             }
         } catch (\Exception $e) {
             // Таблиця може не існувати, використовуємо налаштування за замовчуванням
-            if (function_exists('logger')) {
-                logger()->logError('BotBlockerService: Помилка завантаження налаштувань - ' . $e->getMessage());
-            }
+            logger()->logError('BotBlockerService: Помилка завантаження налаштувань - ' . $e->getMessage(), ['exception' => $e]);
             $this->blockEnabled = false;
             $this->allowedBots = [];
         }
@@ -173,9 +169,7 @@ class BotBlockerService
 
             return true;
         } catch (\Exception $e) {
-            if (function_exists('logger')) {
-                logger()->logError('BotBlockerService: Не вдалося створити таблицю bot_blocker_logs - ' . $e->getMessage());
-            }
+            logger()->logError('BotBlockerService: Не вдалося створити таблицю bot_blocker_logs - ' . $e->getMessage(), ['exception' => $e]);
             return false;
         }
     }
@@ -350,9 +344,7 @@ class BotBlockerService
                     ]
                 );
             } catch (\Exception $e) {
-                if (function_exists('logger')) {
-                    logger()->logError('BotBlockerService: Помилка логування - ' . $e->getMessage());
-                }
+                logger()->logError('BotBlockerService: Помилка логування - ' . $e->getMessage(), ['exception' => $e]);
             }
         }
 
@@ -460,9 +452,7 @@ class BotBlockerService
                 'top_ips' => $topIps,
             ];
         } catch (\Exception $e) {
-            if (function_exists('logger')) {
-                logger()->logError('BotBlockerService: Помилка отримання статистики блокувань - ' . $e->getMessage());
-            }
+            logger()->logError('BotBlockerService: Помилка отримання статистики блокувань - ' . $e->getMessage(), ['exception' => $e]);
             return [];
         }
     }
@@ -514,9 +504,7 @@ class BotBlockerService
             }
             
         } catch (\Exception $e) {
-            if (function_exists('logger')) {
-                logger()->logError('BotBlockerService: Не вдалося завантажити налаштування з БД - ' . $e->getMessage());
-            }
+            logger()->logError('BotBlockerService: Не вдалося завантажити налаштування з БД - ' . $e->getMessage(), ['exception' => $e]);
         }
         
         return [
@@ -563,9 +551,7 @@ class BotBlockerService
 
             return true;
         } catch (\Throwable $e) {
-            if (function_exists('logger')) {
-                logger()->logException($e, ['method' => 'saveSettings']);
-            }
+            logger()->logException($e, ['method' => 'saveSettings']);
             return false;
         }
     }
@@ -589,9 +575,7 @@ class BotBlockerService
             $this->db->execute('TRUNCATE TABLE bot_blocker_logs');
             return true;
         } catch (\Exception $e) {
-            if (function_exists('logger')) {
-                logger()->logError('BotBlockerService: Помилка очищення логів - ' . $e->getMessage());
-            }
+            logger()->logError('BotBlockerService: Помилка очищення логів - ' . $e->getMessage(), ['exception' => $e]);
             return false;
         }
     }

@@ -16,10 +16,6 @@ $rootDir = defined('ROOT_DIR') ? ROOT_DIR : dirname(__DIR__, 2);
 require_once $rootDir . '/engine/core/support/base/BasePlugin.php';
 require_once $rootDir . '/engine/core/support/helpers/UrlHelper.php';
 
-// Підключаємо Logger для логування
-if (!class_exists('Logger') && file_exists($rootDir . '/engine/infrastructure/logging/Logger.php')) {
-    require_once $rootDir . '/engine/infrastructure/logging/Logger.php';
-}
 
 if (! function_exists('addHook')) {
     require_once $rootDir . '/engine/includes/functions.php';
@@ -288,9 +284,7 @@ class BotBlockerPlugin extends BasePlugin
                 }
             }
         } catch (\Throwable $e) {
-            if (function_exists('logger')) {
-                logger()->logException($e, ['plugin' => 'bot-blocker', 'method' => 'blockBots']);
-            }
+            logger()->logException($e, ['plugin' => 'bot-blocker', 'method' => 'blockBots']);
         }
 
         self::$requestChecked = true;
@@ -340,9 +334,7 @@ class BotBlockerPlugin extends BasePlugin
                 $this->setSetting($key, $value);
             }
         } catch (\Exception $e) {
-            if (function_exists('logger')) {
-                logger()->logException($e, ['plugin' => 'bot-blocker', 'action' => 'install']);
-            }
+            logger()->logException($e, ['plugin' => 'bot-blocker', 'action' => 'install']);
         }
     }
 }
