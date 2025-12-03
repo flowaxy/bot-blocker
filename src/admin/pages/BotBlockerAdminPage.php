@@ -170,8 +170,13 @@ class BotBlockerAdminPage extends AdminPage
             if ($result) {
                     // Оновлюємо сервіс для завантаження нових налаштувань
                 $this->botBlockerService = new BotBlockerService('bot-blocker');
+                logger()->logInfo('Bot Blocker налаштування збережено', [
+                    'block_enabled' => $blockEnabled,
+                    'allowed_bots_count' => count($allowedBots),
+                ]);
                 $this->setMessage('Налаштування успішно збережено', 'success');
             } else {
+                logger()->logWarning('Помилка збереження налаштувань Bot Blocker');
                 $this->setMessage('Помилка збереження налаштувань', 'danger');
             }
         } catch (\Throwable $e) {
@@ -196,14 +201,17 @@ class BotBlockerAdminPage extends AdminPage
         try {
             if ($this->botBlockerService) {
                 if ($this->botBlockerService->clearLogs()) {
+                    logger()->logInfo('Bot Blocker логи очищено');
                     $this->setMessage('Логи успішно очищено', 'success');
                 } else {
+                    logger()->logWarning('Помилка очищення логів Bot Blocker');
                     $this->setMessage('Помилка очищення логів. Перевірте логи.', 'danger');
                 }
             } else {
                 $this->setMessage('Помилка: сервіс блокування ботів недоступний', 'danger');
             }
         } catch (\Exception $e) {
+            logger()->logError('Bot Blocker помилка очищення логів', ['error' => $e->getMessage()]);
             $this->setMessage('Помилка очищення логів: ' . $e->getMessage(), 'danger');
         }
 
