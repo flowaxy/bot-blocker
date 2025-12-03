@@ -35,6 +35,12 @@ class BotBlockerAdminPage extends AdminPage
     {
         parent::__construct();
 
+        // Перевірка прав доступу
+        if (! function_exists('current_user_can') || ! current_user_can('admin.access')) {
+            Response::redirectStatic(UrlHelper::admin('dashboard'));
+            exit;
+        }
+
         // Визначаємо шлях до директорії плагіна
         $this->pluginDir = dirname(__DIR__, 3);
 
